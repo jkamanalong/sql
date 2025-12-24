@@ -1,0 +1,50 @@
+This is my personal reference whenever I write SQL queries. 
+This will make sense once you have experience writing actual queries. 
+
+
+Standard order:
+
+SELECT
+  t.column_names AS [renamed_column]
+  subqueries here are calculated globally, group by has no effect here and it uses the whole table without grouping. 
+  CASE
+  WHEN logic THEN 'output1'
+  ELSE 'output2'
+  END AS 'cw_column_name'
+FROM table1 AS t
+INNER JOIN table2 as y ON t.id=y.id
+WHERE
+  t.total=2.0
+  t.total BETWEEN 1.0 AND 2.0
+  t.total IN (1.0, 2.0)
+  t.name = 'name'
+  t.name IN ('name1', 'name2', 'name3')
+  t.name LIKE '%nam_%'
+  DATE(t.InvoiceDate) = 'YYYY-MM-DD'
+  cw_column_name IN ('output1', 'output2')
+  subqueries here are used for filtering
+      total < 
+        (SELECT AVG(value) FROM table) OR 
+        (SELECT id FROM table WHERE id='123') OR
+        trackid NOT IN (SELECT DISTINCT trackid FROM table) -- using a list to filter
+GROUP BY is useful for aggregate functions
+HAVING is useful with aggregates
+ORDER BY t.renamed_column ASC (OR DESC)
+
+
+SQL Functions:
+|| for concatenation
+SUBSTR('string', start, end) takes a portion of the string
+strftime('%Y-%m-%d',Birthdate) string to date
+
+Saving a query: 
+COPY( query )
+TO 'file_directory'
+WITH (FORMAT CSV,HEADER,DELIMITER '|');
+
+Using CTEs
+WITH CTE_name AS ( queried table )
+SELECT * 
+FROM CTE_name as cte
+LEFT OUTER JOIN table1 as t ON cte.id=t.id
+
